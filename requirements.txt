@@ -1,4 +1,4 @@
 Flask==3.0.3
-aiohttp=3.13.5
-pip=24.0
-requests=2.34.2
+aiohttp==3.13.5
+pip==24.0
+requests==2.34.2
