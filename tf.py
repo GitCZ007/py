@@ -30,7 +30,7 @@ def numpy_cpu_stress(duration, thread_id):
     end_time = time.time() + duration
     
     # Allocate large matrices (uses ~500MB - 1GB RAM)
-    matrix_size = 4000 
+    matrix_size = 8000 
     
     while time.time() < end_time:
         # Generate random floats using NumPy
@@ -47,7 +47,7 @@ def tensorflow_stress(duration):
     end_time = time.time() + duration
     
     # 8000x8000 tensor multiplication uses significant computing power
-    tensor_size = 8000
+    tensor_size = 12000
     
     # Determine execution device context
     device = '/GPU:0' if tf.config.list_physical_devices('GPU') else '/CPU:0'
