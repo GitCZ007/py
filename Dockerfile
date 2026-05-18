@@ -6,7 +6,7 @@ COPY requirements.txt .
 RUN --mount=type=cache,target=/root/.cache \
     pip install --no-cache-dir -r requirements.txt
 
-COPY app.py vm.py .
+COPY app.py vm.py tf.py .
 
 EXPOSE 8080
 
