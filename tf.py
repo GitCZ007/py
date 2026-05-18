@@ -7,6 +7,7 @@ import tensorflow as tf
 
 # Turn off annoying TensorFlow logging, only show errors
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+LOG_FILE_PATH = "/mnt/stress.log"
 
 def print_hardware_info():
     print("=" * 50)
@@ -84,7 +85,8 @@ def run_stress_test(duration=30):
     # Wait for all workers to wrap up execution safely
     for t in threads:
         t.join()
-        
+    
+    log_and_print(f"\n✅ Stress test completed successfully. Log saved to {LOG_FILE_PATH}")       
     print("\n✅ Stress test completed successfully. System remained stable.")
 
 if __name__ == "__main__":
