@@ -1,38 +1,31 @@
-#!/usr/bin/env python3
-"""
-A tiny Flask service that demonstrates:
-* an HTTP endpoint
-* reading configuration from the environment
-* printing a friendly response
-"""
+import sys
+import io
+from fastapi import FastAPI
+from pydantic import BaseModel
 
-from flask import Flask
-import os
-import time
+app = FastAPI()
 
-app = Flask(__name__)
+class CodePayload(BaseModel):
+    script_code: str
 
-@app.route("/")
-def hello():
-    """Return a short greeting."""
-    hostname = os.getenv("HOSTNAME", "unknown")
-    greeting = os.getenv("GREETING", "Hello")
-    current_time = time.strftime("%Y-%m-%d %H:%M:%S")
-    return (
-        f"{greeting}! You are running on <strong>{hostname}</strong> "
-        f"at <strong>{current_time}</strong>"
-    )
-
-
-@app.route("/healthz")
-def health():
-    """Simple health‑check endpoint."""
-    return "ok", 200
-
-
-if __name__ == "__main__":
-    # When run as a script, start the Flask dev server.
-    # In a container we’ll use the Gunicorn‑style CMD in the Dockerfile.
-    host = os.getenv("APP_HOST", "0.0.0.0")
-    port = int(os.getenv("APP_PORT", 8080))
-    app.run(host=host, port=port)
+@app.post("/run")
+def run_dynamic_script(payload: CodePayload):
+    # Redirect system output to capture print statements
+    old_stdout = sys.stdout
+    redirected_output = sys.stdout = io.StringIO()
+    
+    try:
+        # Execute the raw string code sent by the VM
+        exec(payload.script_code, {"__builtins__": __builtins__})
+        error_msg = None
+    except Exception as e:
+        print(f"Execution Error: {str(e)}")
+        error_msg = str(e)
+    finally:
+        # Restore normal system output
+        sys.stdout = old_stdout
+        
+    return {
+        "success": error_msg is None,
+        "output": redirected_output.getvalue()
+    }
