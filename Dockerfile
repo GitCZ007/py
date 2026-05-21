@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/root/.cache \
 
 COPY app.py vm.py tf.py num.py .
 
-EXPOSE 8080
+EXPOSE 22
 
 ENV GREETING="Hello"
 #ENV APP_HOST=0.0.0.0
